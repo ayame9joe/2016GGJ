@@ -8,11 +8,16 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	public GameObject thought;
 
+	/// <summary>
+	/// The sword.
+	/// </summary>
+	public GameObject sword;
+
 	private float timeInterval;
 	private float timeTemp = 0f;
-	private float timeIntervalDeviation;
+	private bool countTime;
 
-	private int meditationTimes;
+	private int swordNumber;
 
 	// Use this for initialization
 	void Start () {
@@ -34,27 +39,38 @@ public class GameManager : MonoBehaviour {
 
 	void ThoughtsInitiation () {
 
-		Instantiate (thought, new Vector2 (Random.Range (-Defines.radius, Defines.radius), 
+		GameObject go = Instantiate (thought, new Vector2 (Random.Range (-Defines.radius, Defines.radius), 
 			Random.Range (-Defines.radius, Defines.radius)), Quaternion.identity) as GameObject;
 
 	}
 
 	void Meditation () {
 	
-		TimeIntervalDeviationCalculation ();
+		SwordNumberCalculation ();
+		SwordInitiation ();
 
 	}
 
-	void TimeIntervalDeviationCalculation () {
+	void SwordNumberCalculation () {
 
-		meditationTimes++;
-
-		timeTemp = Time.time;
-		if (meditationTimes == 1) {
+		if (!countTime) {
 			timeInterval = Time.time - timeTemp;
+			countTime = true;
+		} 
+		if (countTime) {
+			timeTemp = Time.time;
+			countTime = false;
 		}
 
-		timeIntervalDeviation = (Time.time - timeTemp) - timeInterval;
+		swordNumber = (int)(Defines.maxSwordNumber / timeInterval);
+			
+	}
+
+	void SwordInitiation () {
+
+		for (int i = 0; i <= swordNumber; i++) {
+			Instantiate (sword, new Vector2 (0, 0), Quaternion.identity);
+		}
 
 	}
 }
