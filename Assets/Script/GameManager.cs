@@ -43,47 +43,10 @@ public class GameManager : MonoBehaviour {
 	// Update is called once per frame
 	void Update () {
 
-		if (Input.GetKeyDown (KeyCode.Space)) {
-
-
-			Meditation ();
-
-			holdTimeTemp = holdTime;
-			holdTime = 0;
-
-			stopTimeTemp = stopTime;
-			stopTime = 0;
-
-			Debug.Log (stopTimeInterval);
-
-		}
-
-		if (Input.GetKey (KeyCode.Space)) {
-
-			holdTime += 1f;
-
-			holdTimeInterval = (holdTime - holdTimeTemp);
-
-		} else {
-
-			stopTime += 1f;
-
-			stopTimeInterval = stopTime - stopTimeTemp;
-
-		
-
-		}
-
-		if (timeInterval < 1) {
-			hitTimes++;
-		} else {
-			hitTimes = 0;
-		}
-
-		if (hitTimes > 5) {
-			level++;
-			hitTimes = 0;
-		}
+		SwordAttack ();
+		Bomb ();
+		StopInitThoughts ();
+		LevelUp ();
 
 	}
 
@@ -101,10 +64,12 @@ public class GameManager : MonoBehaviour {
 	/// <summary>
 	/// Calculate and init sword.
 	/// </summary>
-	void Meditation () {
-	
-		CalculationSwordNumber ();
-		InitiationSword ();
+	void SwordAttack () {
+
+		if (Input.GetKeyDown (KeyCode.Space)) {
+			CalculationSwordNumber ();
+			InitiationSword ();
+		}
 
 	}
 
@@ -137,5 +102,51 @@ public class GameManager : MonoBehaviour {
 
 	}
 
+	void LevelUp () {
+		if (timeInterval < 1) {
+			hitTimes++;
+		} else {
+			hitTimes = 0;
+		}
 
+		if (hitTimes > 5) {
+			level++;
+			hitTimes = 0;
+		}
+	}
+
+	void Bomb () {
+		if (Input.GetKeyDown (KeyCode.Space)) {
+
+			holdTimeTemp = holdTime;
+			holdTime = 0;
+
+		}
+
+		if (Input.GetKey (KeyCode.Space)) {
+
+			holdTime += 1f;
+
+			holdTimeInterval = (holdTime - holdTimeTemp);
+
+		} 
+	}
+
+	void StopInitThoughts () {
+		if (Input.GetKeyDown (KeyCode.Space)) {
+
+			stopTimeTemp = stopTime;
+			stopTime = 0;
+
+		}
+
+		if (Input.GetKey (KeyCode.Space)) {
+
+		} else {
+
+			stopTime += 1f;
+
+			stopTimeInterval = stopTime - stopTimeTemp;
+		}
+	}
 }
