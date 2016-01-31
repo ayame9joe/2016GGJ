@@ -25,28 +25,55 @@ public class GameManager : MonoBehaviour {
 	private float stopTimeTemp;
 	private float stopTimeInterval;
 
+	/// <summary>
+	/// 固有频率。
+	/// </summary>
+	private float natualTimeInterval;
+
+	/// <summary>
+	/// 体力值。
+	/// </summary>
+	public float vitality = 10;
+
 	private int swordNumber;
 
+	/// <summary>
+	/// 连击次数。
+	/// </summary>
 	private int hitTimes;
 
+	/// <summary>
+	/// 等级。
+	/// </summary>
 	private int level;
 
-
+	private int dayTimes;
 
 	// Use this for initialization
 	void Start () {
 
-		InvokeRepeating ("InitiationThoughts", 0, Random.Range (0, 0.5f));
+		InvokeRepeating ("InitiationThoughts", 0 + Mathf.Abs (stopTimeInterval), Random.Range (0, 0.5f));
+		InvokeRepeating ("ChangeDayAndNight", 0, 5);
 
 	}
 
 	// Update is called once per frame
 	void Update () {
-
-		SwordAttack ();
-		Bomb ();
-		StopInitThoughts ();
+		
 		LevelUp ();
+
+		if (level == 0) {
+			SwordAttack ();
+		} else if (level == 1) {
+			SwordAttack ();
+			Bomb ();
+		} else if (level == 2) {
+			SwordAttack ();
+			Bomb ();
+			StopInitThoughts ();
+		}
+
+
 
 	}
 
@@ -67,8 +94,12 @@ public class GameManager : MonoBehaviour {
 	void SwordAttack () {
 
 		if (Input.GetKeyDown (KeyCode.Space)) {
+
+			vitality -= 1f;
+
 			CalculationSwordNumber ();
 			InitiationSword ();
+			CheckNatualTimeInternalDiff ();
 		}
 
 	}
@@ -102,6 +133,12 @@ public class GameManager : MonoBehaviour {
 
 	}
 
+	void CheckNatualTimeInternalDiff () {
+		if (Mathf.Abs (natualTimeInterval - timeInterval) < 0.5f) {
+			vitality += 2f;
+		}
+	}
+
 	void LevelUp () {
 		if (timeInterval < 1) {
 			hitTimes++;
@@ -125,6 +162,8 @@ public class GameManager : MonoBehaviour {
 
 		if (Input.GetKey (KeyCode.Space)) {
 
+			vitality -= 0.1f;
+
 			holdTime += 1f;
 
 			holdTimeInterval = (holdTime - holdTimeTemp);
@@ -144,9 +183,22 @@ public class GameManager : MonoBehaviour {
 
 		} else {
 
+			vitality -= 0.1f;
+
 			stopTime += 1f;
 
 			stopTimeInterval = stopTime - stopTimeTemp;
 		}
 	}
+
+	void ChangeDayAndNight () {
+		dayTimes++;
+		if (dayTimes % 2 == 0) {
+			natualTimeInterval = 2;
+		} else {
+			natualTimeInterval = 5;
+		}
+
+	}
+		
 }
