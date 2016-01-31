@@ -13,6 +13,8 @@ public class GameManager : MonoBehaviour {
 	/// </summary>
 	public GameObject sword;
 
+	public GameObject boom;
+
 	private float timeInterval;
 	private float timeTemp = 0f;
 	private bool countTime;
@@ -49,6 +51,7 @@ public class GameManager : MonoBehaviour {
 
 	private int dayTimes;
 
+
 	// Use this for initialization
 	void Start () {
 
@@ -72,6 +75,8 @@ public class GameManager : MonoBehaviour {
 			Bomb ();
 			StopInitThoughts ();
 		}
+
+
 
 
 
@@ -169,6 +174,18 @@ public class GameManager : MonoBehaviour {
 			holdTimeInterval = (holdTime - holdTimeTemp);
 
 		} 
+
+		GameObject.Instantiate (boom, new Vector3 (0, 0, 0), Quaternion.identity);
+
+		GameObject[] go = GameObject.FindGameObjectsWithTag ("Thought");
+		for (int i = 0; i < go.Length; i++) {
+			if (go [i].transform.position.x < -2 ||
+			    go [i].transform.position.x > 2 ||
+			    go [i].transform.position.y < -2 ||
+			    go [i].transform.position.y > 2) {
+				Destroy (go [i].transform.gameObject);
+			}
+		}
 	}
 
 	void StopInitThoughts () {
