@@ -1,8 +1,13 @@
 ﻿using UnityEngine;
 using System.Collections;
 using DG.Tweening;
+using UnityEngine.UI;
 
 public class GameManager : MonoBehaviour {
+
+	public Text txtVitality;
+	public Text txtLevel;
+	public Text txtNaturalTimeInterval;
 
 	/// <summary>
 	/// 思绪片段
@@ -18,7 +23,11 @@ public class GameManager : MonoBehaviour {
 
 	private float timeInterval;
 	private float timeTemp = 0f;
+	private float timeIntervalTemp;
+	private float timeIntervalDiff;
 	private bool countTime;
+	private bool countTimeInterval;
+
 
 	private float holdTime;
 	private float holdTimeTemp;
@@ -36,7 +45,7 @@ public class GameManager : MonoBehaviour {
 	/// <summary>
 	/// 体力值。
 	/// </summary>
-	public float vitality = 10;
+	public float vitality = 2;
 
 	private int swordNumber;
 
@@ -70,19 +79,33 @@ public class GameManager : MonoBehaviour {
 		
 		LevelUp ();
 
-		if (level == 0) {
-			SwordAttack ();
-		} else if (level == 1) {
-			SwordAttack ();
-			Bomb ();
-		} else if (level == 2) {
-			SwordAttack ();
-			Bomb ();
-			StopInitThoughts ();
+
+		if (vitality > 0) {
+			if (level == 0) {
+				SwordAttack ();
+			} else if (level == 1) {
+				SwordAttack ();
+				Bomb ();
+			} else if (level == 2) {
+				SwordAttack ();
+				Bomb ();
+				StopInitThoughts ();
+			}
 		}
 
+		if (Input.GetKey (KeyCode.Space)) {
+		
+		} else {
+			if (vitality < 2) {
+				vitality += 0.011f;
+			}
+		}
 
+		txtVitality.text = "Vitality: " + vitality.ToString ();
+		txtLevel.text = "Level: " + level.ToString ();
+		txtNaturalTimeInterval.text = "Natural Time Interval: " + natualTimeInterval.ToString ();
 
+		Debug.Log (timeIntervalDiff);
 
 
 	}
@@ -107,7 +130,7 @@ public class GameManager : MonoBehaviour {
 
 			vitality -= 1f;
 
-			if (timeInterval < 1) {
+			if (Mathf.Abs(timeIntervalDiff) < 0.3f) {
 				hitTimes++;
 			} else {
 				hitTimes = 0;
@@ -134,7 +157,16 @@ public class GameManager : MonoBehaviour {
 			countTime = false;
 		}
 
-		swordNumber = (int)(Defines.maxSwordNumber / timeInterval);
+		if (countTimeInterval) {
+			timeIntervalDiff = timeInterval - timeIntervalTemp;
+			countTimeInterval = false;
+		}
+		if (!countTimeInterval) {
+			timeIntervalTemp = timeInterval;
+			countTimeInterval = true;
+		}
+
+		swordNumber = (int)(Defines.maxSwordNumber / Mathf.Abs(timeIntervalDiff) / 10);
 			
 	}
 
@@ -152,6 +184,7 @@ public class GameManager : MonoBehaviour {
 	void CheckNatualTimeInternalDiff () {
 		if (Mathf.Abs (natualTimeInterval - timeInterval) < 0.5f) {
 			vitality += 2f;
+			Debug.Log ("vitality++");
 		}
 	}
 
@@ -179,19 +212,22 @@ public class GameManager : MonoBehaviour {
 
 			holdTimeInterval = (holdTime - holdTimeTemp);
 
+			// Todo: 只生成一个boom
+			GameObject.Instantiate (boom, new Vector3 (0, 0, 0), Quaternion.identity);
+
+			GameObject[] go = GameObject.FindGameObjectsWithTag ("Thought");
+			for (int i = 0; i < go.Length; i++) {
+				if (go [i].transform.position.x < -2 ||
+					go [i].transform.position.x > 2 ||
+					go [i].transform.position.y < -2 ||
+					go [i].transform.position.y > 2) {
+					Destroy (go [i].transform.gameObject);
+				}
+			}
+
 		} 
 
-		GameObject.Instantiate (boom, new Vector3 (0, 0, 0), Quaternion.identity);
 
-		GameObject[] go = GameObject.FindGameObjectsWithTag ("Thought");
-		for (int i = 0; i < go.Length; i++) {
-			if (go [i].transform.position.x < -2 ||
-			    go [i].transform.position.x > 2 ||
-			    go [i].transform.position.y < -2 ||
-			    go [i].transform.position.y > 2) {
-				Destroy (go [i].transform.gameObject);
-			}
-		}
 	}
 
 	void StopInitThoughts () {
