@@ -3,7 +3,7 @@ using System.Collections;
 
 public class SunAndMoonScript : MonoBehaviour {
 
-	public float rotateSpeed = 20f;
+	public float rotateSpeed = 0.2f;
 	// Use this for initialization
 	void Start () {
 	
@@ -11,6 +11,7 @@ public class SunAndMoonScript : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
-		this.transform.Rotate (Vector3.back * Time.deltaTime * rotateSpeed);
+		this.transform.Rotate (Vector3.back * rotateSpeed * Time.deltaTime);
+		//Debug.Log (Time.deltaTime * rotateSpeed);
 	}
 }

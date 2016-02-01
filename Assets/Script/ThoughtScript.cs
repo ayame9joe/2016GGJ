@@ -9,6 +9,7 @@ public class ThoughtScript : MonoBehaviour {
 	void Start () {
 		
 		thisPos = this.transform.position;
+		this.transform.DORotate (new Vector3 (0, 0, Random.Range (-180, 180)), 0);
 
 		MoveThoughts ();
 	}

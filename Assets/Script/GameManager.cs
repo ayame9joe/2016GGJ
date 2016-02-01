@@ -55,7 +55,7 @@ public class GameManager : MonoBehaviour {
 	// Use this for initialization
 	void Start () {
 
-		InvokeRepeating ("InitiationThoughts", 0 + Mathf.Abs (stopTimeInterval), Random.Range (0, 0.5f));
+		InvokeRepeating ("InitiationThoughts", 0 + Mathf.Abs (stopTimeInterval), Random.Range (Defines.minThoughtsTime, Defines.maxThoughtsTime));
 		InvokeRepeating ("ChangeDayAndNight", 0, 5);
 
 	}
@@ -102,6 +102,12 @@ public class GameManager : MonoBehaviour {
 
 			vitality -= 1f;
 
+			if (timeInterval < 1) {
+				hitTimes++;
+			} else {
+				hitTimes = 0;
+			}
+
 			CalculationSwordNumber ();
 			InitiationSword ();
 			CheckNatualTimeInternalDiff ();
@@ -133,7 +139,7 @@ public class GameManager : MonoBehaviour {
 	void InitiationSword () {
 
 		for (int i = 0; i <= swordNumber; i++) {
-			Instantiate (sword, new Vector2 (0, 0), Quaternion.identity);
+			Instantiate (sword, new Vector2 (0, 0), sword.transform.localRotation);
 		}
 
 	}
@@ -145,11 +151,6 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void LevelUp () {
-		if (timeInterval < 1) {
-			hitTimes++;
-		} else {
-			hitTimes = 0;
-		}
 
 		if (hitTimes > 5) {
 			level++;
