@@ -1,5 +1,6 @@
 ﻿using UnityEngine;
 using System.Collections;
+using DG.Tweening;
 
 public class GameManager : MonoBehaviour {
 
@@ -51,12 +52,16 @@ public class GameManager : MonoBehaviour {
 
 	private int dayTimes;
 
+	Animator anim;
+
 
 	// Use this for initialization
 	void Start () {
 
 		InvokeRepeating ("InitiationThoughts", 0 + Mathf.Abs (stopTimeInterval), Random.Range (Defines.minThoughtsTime, Defines.maxThoughtsTime));
 		InvokeRepeating ("ChangeDayAndNight", 0, 5);
+
+		anim = this.GetComponent<Animator> ();
 
 	}
 
@@ -139,7 +144,7 @@ public class GameManager : MonoBehaviour {
 	void InitiationSword () {
 
 		for (int i = 0; i <= swordNumber; i++) {
-			Instantiate (sword, new Vector2 (0, 0), sword.transform.localRotation);
+			Instantiate (sword, new Vector3 (0, 0, 0), Quaternion.identity);
 		}
 
 	}
