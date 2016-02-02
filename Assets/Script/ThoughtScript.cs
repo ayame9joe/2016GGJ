@@ -31,6 +31,8 @@ public class ThoughtScript : MonoBehaviour {
 			this.transform.position.y > Defines.radius ||
 			this.transform.position.y < -Defines.radius ) {
 			Destroy (this.gameObject);
+			//GameManager.vitality -= 0.1f;
+			Defines.maxVitality -= 0.1f;
 		}
 	}
 		

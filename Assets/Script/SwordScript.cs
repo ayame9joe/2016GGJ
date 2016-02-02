@@ -27,19 +27,19 @@ public class SwordScript : MonoBehaviour {
 		if ( tempY < 0) { 
 			this.transform.DOMove (new Vector3 (tempX, -1 * Mathf.Sqrt (Defines.radius * Defines.radius - tempX * tempX), 0), 2);
 			if (tempX > 0) {
-				angle = Mathf.Asin (Mathf.Abs (tempX) / Defines.radius);
+				angle = 90 + Mathf.Asin (Mathf.Abs (tempX) / Defines.radius);
 				transform.localRotation = Quaternion.Euler (0f, 0f, this.angle * Mathf.Rad2Deg);
 			} else {
-				angle = - Mathf.Asin (Mathf.Abs (tempX) / Defines.radius);
+				angle = 90 - Mathf.Asin (Mathf.Abs (tempX) / Defines.radius);
 				transform.localRotation = Quaternion.Euler (0f, 0f, this.angle * Mathf.Rad2Deg);
 			}
 		} else {
 			this.transform.DOMove (new Vector3 (tempX, Mathf.Sqrt (Defines.radius * Defines.radius - tempX * tempX), 0), 2);
 			if (tempX > 0) {
-				angle = 90 + Mathf.Acos(Mathf.Abs(tempX / Defines.radius));
+				angle = 90 + 90 + Mathf.Acos(Mathf.Abs(tempX / Defines.radius));
 				transform.localRotation = Quaternion.Euler (0f, 0f, this.angle * Mathf.Rad2Deg);
 			} else {
-				angle = - 90 - Mathf.Acos(Mathf.Abs(tempX / Defines.radius));
+				angle = 90 - 90 - Mathf.Acos(Mathf.Abs(tempX / Defines.radius));
 				transform.localRotation = Quaternion.Euler (0f, 0f, this.angle * Mathf.Rad2Deg);
 			}
 		}

@@ -40,12 +40,12 @@ public class GameManager : MonoBehaviour {
 	/// <summary>
 	/// 固有频率。
 	/// </summary>
-	private float natualTimeInterval;
+	private float naturalTimeInterval;
 
 	/// <summary>
 	/// 体力值。
 	/// </summary>
-	public float vitality = 2;
+	public static float vitality = Defines.maxVitality;
 
 	private int swordNumber;
 
@@ -61,6 +61,8 @@ public class GameManager : MonoBehaviour {
 
 	private int dayTimes;
 
+	int spaceHoldTime;
+
 	Animator anim;
 
 
@@ -68,7 +70,7 @@ public class GameManager : MonoBehaviour {
 	void Start () {
 
 		InvokeRepeating ("InitiationThoughts", 0 + Mathf.Abs (stopTimeInterval), Random.Range (Defines.minThoughtsTime, Defines.maxThoughtsTime));
-		InvokeRepeating ("ChangeDayAndNight", 0, 5);
+		InvokeRepeating ("ChangeDayAndNight", 0, 8);
 
 		anim = this.GetComponent<Animator> ();
 
@@ -86,26 +88,30 @@ public class GameManager : MonoBehaviour {
 			} else if (level == 1) {
 				SwordAttack ();
 				Bomb ();
-			} else if (level == 2) {
+			} else if (level ==2) {
 				SwordAttack ();
 				Bomb ();
-				StopInitThoughts ();
+//				StopInitThoughts ();
 			}
+		}
+
+		if (level > 2) {
+			level = 2;
 		}
 
 		if (Input.GetKey (KeyCode.Space)) {
 		
 		} else {
-			if (vitality < 2) {
+			if (vitality < Defines.maxVitality) {
 				vitality += 0.011f;
 			}
 		}
 
 		txtVitality.text = "Vitality: " + vitality.ToString ();
 		txtLevel.text = "Level: " + level.ToString ();
-		txtNaturalTimeInterval.text = "Natural Time Interval: " + natualTimeInterval.ToString ();
+		txtNaturalTimeInterval.text = "Natural Time Interval: " + naturalTimeInterval.ToString ();
 
-		Debug.Log (timeIntervalDiff);
+		Debug.Log (timeInterval);
 
 
 	}
@@ -138,7 +144,7 @@ public class GameManager : MonoBehaviour {
 
 			CalculationSwordNumber ();
 			InitiationSword ();
-			CheckNatualTimeInternalDiff ();
+			ChecknaturalTimeInternalDiff ();
 		}
 
 	}
@@ -181,9 +187,10 @@ public class GameManager : MonoBehaviour {
 
 	}
 
-	void CheckNatualTimeInternalDiff () {
-		if (Mathf.Abs (natualTimeInterval - timeInterval) < 0.5f) {
-			vitality += 2f;
+	void ChecknaturalTimeInternalDiff () {
+		if (Mathf.Abs (naturalTimeInterval - timeInterval) < 0.5f) {
+			vitality += 1f;
+			// TODO: 飘字
 			Debug.Log ("vitality++");
 		}
 	}
@@ -197,24 +204,29 @@ public class GameManager : MonoBehaviour {
 	}
 
 	void Bomb () {
-		if (Input.GetKeyDown (KeyCode.Space)) {
+		if (Input.GetKeyDown (KeyCode.X)) {
 
 			holdTimeTemp = holdTime;
 			holdTime = 0;
 
 		}
 
-		if (Input.GetKey (KeyCode.Space)) {
+		if (Input.GetKey (KeyCode.X)) {
 
-			vitality -= 0.1f;
+			vitality -= 0.5f;
 
 			holdTime += 1f;
 
 			holdTimeInterval = (holdTime - holdTimeTemp);
 
-			// Todo: 只生成一个boom
-			GameObject.Instantiate (boom, new Vector3 (0, 0, 0), Quaternion.identity);
-
+			if (vitality > 0) {
+				if (!GameObject.FindGameObjectWithTag ("Boom")) {
+					GameObject.Instantiate (boom, new Vector3 (0, 0, 0), Quaternion.identity);
+				} else {
+					Destroy (GameObject.FindGameObjectWithTag ("Boom"));
+					GameObject.Instantiate (boom, new Vector3 (0, 0, 0), Quaternion.identity);
+				}
+			}
 			GameObject[] go = GameObject.FindGameObjectsWithTag ("Thought");
 			for (int i = 0; i < go.Length; i++) {
 				if (go [i].transform.position.x < -2 ||
@@ -229,8 +241,9 @@ public class GameManager : MonoBehaviour {
 
 
 	}
+		
 
-	void StopInitThoughts () {
+	/*void StopInitThoughts () {
 		if (Input.GetKeyDown (KeyCode.Space)) {
 
 			stopTimeTemp = stopTime;
@@ -248,14 +261,14 @@ public class GameManager : MonoBehaviour {
 
 			stopTimeInterval = stopTime - stopTimeTemp;
 		}
-	}
+	}*/
 
 	void ChangeDayAndNight () {
 		dayTimes++;
 		if (dayTimes % 2 == 0) {
-			natualTimeInterval = 2;
+			naturalTimeInterval = 0.5f;
 		} else {
-			natualTimeInterval = 5;
+			naturalTimeInterval = 2;
 		}
 
 	}
